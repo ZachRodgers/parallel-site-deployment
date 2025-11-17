@@ -152,8 +152,26 @@ const PrivacyPolicy_Operator: React.FC = () => {
                     </div>
                 </section>
 
+                <section className="legal-section" id="ai-insights">
+                    <h2 className="legal-section-title">6. AI Insights and Automation</h2>
+                    <div className="legal-section-content">
+                        <p>
+                            Certain features of the Operator Portal leverage artificial intelligence to summarize chat requests, recommend operational
+                            changes, or pre-fill agent payloads. When you enable these tools, the underlying conversation, lot context, and confirmation
+                            history may be processed by Parallel-operated models and audited to improve accuracy, safety, and abuse detection. AI output
+                            is never applied without an operator’s confirmation, and all payloads are stored in accordance with this Privacy Policy.
+                        </p>
+                        <p>
+                            We do not sell AI-generated content or the associated telemetry to third parties. However, we may use anonymized and
+                            aggregated statistics to evaluate performance, measure quality, and design new safeguards. You may disable AI functionality
+                            for a lot at any time by contacting Parallel support; doing so will stop new conversations from being routed through AI, but
+                            historical confirmations may continue to be retained for compliance and security purposes.
+                        </p>
+                    </div>
+                </section>
+
                 <section className="legal-section" id="data-retention">
-                    <h2 className="legal-section-title">6. Data Retention</h2>
+                    <h2 className="legal-section-title">7. Data Retention</h2>
                     <div className="legal-section-content">
                         <p>
                             We retain personal information for as long as necessary to provide the Service and fulfill the purposes outlined in this Privacy Policy.
@@ -168,7 +186,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="data-security">
-                    <h2 className="legal-section-title">7. Data Security</h2>
+                    <h2 className="legal-section-title">8. Data Security</h2>
                     <div className="legal-section-content">
                         <p>
                             We implement appropriate technical and organizational measures to protect your personal information against unauthorized access,
@@ -187,7 +205,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="user-rights">
-                    <h2 className="legal-section-title">8. Your Rights and Choices</h2>
+                    <h2 className="legal-section-title">9. Your Rights and Choices</h2>
                     <div className="legal-section-content">
                         <p>Depending on your location, you may have certain rights regarding your personal information:</p>
                         <ul className="legal-list">
@@ -202,7 +220,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="cookies">
-                    <h2 className="legal-section-title">9. Cookies and Tracking Technologies</h2>
+                    <h2 className="legal-section-title">10. Cookies and Tracking Technologies</h2>
                     <div className="legal-section-content">
                         <p>
                             We use cookies and similar tracking technologies to enhance your experience with our Service.
@@ -215,7 +233,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="third-party-services">
-                    <h2 className="legal-section-title">10. Third-Party Services</h2>
+                    <h2 className="legal-section-title">11. Third-Party Services</h2>
                     <div className="legal-section-content">
                         <p>
                             Our Service may contain links to third-party websites or integrate with third-party services.
@@ -225,7 +243,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="international-transfers">
-                    <h2 className="legal-section-title">11. International Data Transfers</h2>
+                    <h2 className="legal-section-title">12. International Data Transfers</h2>
                     <div className="legal-section-content">
                         <p>
                             Your information may be transferred to and maintained on computers located outside of your jurisdiction where data protection laws may differ.
@@ -235,7 +253,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="children-privacy">
-                    <h2 className="legal-section-title">12. Children's Privacy</h2>
+                    <h2 className="legal-section-title">13. Children's Privacy</h2>
                     <div className="legal-section-content">
                         <p>
                             The Operator Portal is intended for business use only and is not marketed or available for children under the age of 13.
@@ -244,7 +262,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="policy-updates">
-                    <h2 className="legal-section-title">13. Changes to This Privacy Policy</h2>
+                    <h2 className="legal-section-title">14. Changes to This Privacy Policy</h2>
                     <div className="legal-section-content">
                         <p>
                             We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page
@@ -254,7 +272,7 @@ const PrivacyPolicy_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="contact">
-                    <h2 className="legal-section-title">14. Contact Information</h2>
+                    <h2 className="legal-section-title">15. Contact Information</h2>
                     <div className="legal-section-content">
                         <p>
                             If you have any questions about this Privacy Policy or our privacy practices, please contact us at:

@@ -238,8 +238,27 @@ const TermsOfService_Operator: React.FC = () => {
                     </div>
                 </section>
 
+                <section className="legal-section" id="ai-services">
+                    <h2 className="legal-section-title">12. AI-Powered Services and Human Oversight</h2>
+                    <div className="legal-section-content">
+                        <p>
+                            Portions of the Operator Portal now include AI-driven assistants (“Parallel AI Agents”) that can propose task summaries,
+                            draft responses, or prepare operational changes such as rate adjustments or registry updates. These automations rely on the
+                            operational data you provide and the prompts you configure. AI output is generated on a best-effort basis and may include
+                            errors or omissions. You remain responsible for reviewing every AI recommendation, confirming any suggested action, and
+                            ensuring that downstream updates are accurate and lawful.
+                        </p>
+                        <p>
+                            By enabling an AI Agent you (a) authorize Parallel to process the relevant lot data in order to craft prompts and payload
+                            templates, (b) acknowledge that all confirmations are logged for auditing and abuse prevention, and (c) agree not to use
+                            AI tools to circumvent applicable law, parking rules, or these Terms. We may temporarily disable AI access for accounts
+                            that misuse the feature or when additional safeguards are required.
+                        </p>
+                    </div>
+                </section>
+
                 <section className="legal-section" id="service-availability">
-                    <h2 className="legal-section-title">12. Service Availability</h2>
+                    <h2 className="legal-section-title">13. Service Availability</h2>
                     <div className="legal-section-content">
                         <p>
                             We strive to maintain the availability, reliability, and performance of the Services. However, Parallel Parking Solutions Inc. does not guarantee uninterrupted or error-free access. The Services may be temporarily suspended or limited due to scheduled maintenance, updates, infrastructure issues, or events beyond our control (such as outages or force majeure events).
@@ -251,7 +270,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="modifications">
-                    <h2 className="legal-section-title">13. Modifications to Terms</h2>
+                    <h2 className="legal-section-title">14. Modifications to Terms</h2>
                     <div className="legal-section-content">
                         <p>
                             We reserve the right to update or modify these Terms at any time, at our sole discretion. If we make material changes, we will notify users by posting the updated Terms on this page and updating the "Effective Date" at the top. We may also notify you via email or in-app messages, where appropriate.
@@ -263,7 +282,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="termination">
-                    <h2 className="legal-section-title">14. Termination</h2>
+                    <h2 className="legal-section-title">15. Termination</h2>
                     <div className="legal-section-content">
                         <p>
                             We may suspend or terminate your access to the Services, including your account, at any time and without prior notice or liability, for any reason, including but not limited to:
@@ -284,7 +303,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="governing-law">
-                    <h2 className="legal-section-title">15. Governing Law</h2>
+                    <h2 className="legal-section-title">16. Governing Law</h2>
                     <div className="legal-section-content">
                         <p>
                             These Terms shall be governed by and construed in accordance with the laws of the Province of Ontario, Canada, and the applicable federal laws of Canada. Where required by applicable jurisdiction, U.S. laws may also apply.
@@ -296,7 +315,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="purchases-payments">
-                    <h2 className="legal-section-title">16. Purchases and Payments</h2>
+                    <h2 className="legal-section-title">17. Purchases and Payments</h2>
                     <div className="legal-section-content">
                         <p>
                             Certain Services may require payment. By submitting payment information, you authorize us to charge applicable fees to your provided payment method. All payments are final and non-refundable unless otherwise required by law.
@@ -311,7 +330,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="disclaimer">
-                    <h2 className="legal-section-title">17. Disclaimer</h2>
+                    <h2 className="legal-section-title">18. Disclaimer</h2>
                     <div className="legal-section-content">
                         <p>
                             The Services are provided on an "as is" and "as available" basis. We disclaim all warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
@@ -321,7 +340,7 @@ const TermsOfService_Operator: React.FC = () => {
                 </section>
 
                 <section className="legal-section" id="contact">
-                    <h2 className="legal-section-title">18. Contact Information</h2>
+                    <h2 className="legal-section-title">19. Contact Information</h2>
                     <div className="legal-section-content">
                         <p>
                             We provide technical support on a best-effort basis during standard business hours. You may reach our support team at <a href="mailto:info@parkwithparallel.com" className="legal-email">info@parkwithparallel.com</a>.
