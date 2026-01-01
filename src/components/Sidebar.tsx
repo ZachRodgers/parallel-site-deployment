@@ -37,6 +37,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const handleLinkClick = (e: React.MouseEvent, link: typeof links[0]) => {
     if (link.section) {
       if (location.pathname === '/') {

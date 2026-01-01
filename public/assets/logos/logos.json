@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "grayscale": true,
+    "speed": 20,
+    "hover_speed": 90
+  },
+  "logos": [
+    "carleton_university.png",
+    "app_store.png",
+    "google_play.png",
+    "innovation_hub.png",
+    "company_store.png"
+  ]
+}

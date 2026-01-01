@@ -1,0 +1,91 @@
+.trust-badges-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: var(--spacing-xl) 0;
+}
+
+/* Edge gradients for fade in/out effect */
+.trust-badges-wrapper::before,
+.trust-badges-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.trust-badges-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-background) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.trust-badges-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-background) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.trust-badges-track {
+  display: flex;
+  gap: var(--spacing-2xl);
+  width: fit-content;
+}
+
+.trust-badge-item {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 var(--spacing-sm);
+}
+
+.trust-badge-item img {
+  height: 100%;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  opacity: 1;
+  transition: filter var(--transition-fast), opacity var(--transition-fast);
+}
+
+.trust-badge-item:hover img {
+  filter: grayscale(0%) !important;
+  opacity: 1;
+}
+
+@keyframes scroll-logos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 3));
+  }
+}
+
+@media (max-width: 768px) {
+  .trust-badge-item {
+    height: 50px;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .trust-badges-track {
+    gap: var(--spacing-lg);
+  }
+
+  .trust-badges-wrapper::before,
+  .trust-badges-wrapper::after {
+    width: 50px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trust-badges-track {
+    animation: none !important;
+  }
+  .trust-badges-wrapper {
+    overflow-x: auto;
+  }
+}
