@@ -12,8 +12,10 @@ const Home: React.FC = () => {
   const [currentVideo, setCurrentVideo] = useState<{ id: string; title: string } | null>(null);
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop');
   const [showTutorialScrollArrow, setShowTutorialScrollArrow] = useState(false);
+  const [notificationVisible, setNotificationVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const tutorialThumbnailsRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const { scrollToSection } = useScrollToSection();
 
   // Handle navigation from other pages
@@ -68,6 +70,24 @@ const Home: React.FC = () => {
     return () => window.removeEventListener('resize', checkScrollArrows);
   }, []);
 
+  // Notification popup scroll animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setNotificationVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (notificationRef.current) {
+      observer.observe(notificationRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const scrollToEnd = (ref: React.RefObject<HTMLDivElement>) => {
     if (ref.current) {
       ref.current.scrollTo({
@@ -112,7 +132,7 @@ const Home: React.FC = () => {
         <div className="home-content">
           {/* Section 1: Hero */}
           <section className="home-section home-section-centered" id="hero">
-            <h2>Next-gen parking. Stressfree for users. Automated by ai for Operators.</h2>
+            <h2>Next-gen parking. Stressfree for users. Automated by AI for Operators.</h2>
             <p>Parallel is beyond the future of parking, but part of the future of saving time, automation and autonomy, and user satistfaction</p>
           </section>
 
@@ -166,8 +186,8 @@ const Home: React.FC = () => {
               </div>
 
               <div className="operator-tutorials">
-                <h3 className="tutorials-title">Operator Tutorials</h3>
-                <p className="tutorials-description">
+                <h2>Operator Tutorials</h2>
+                <p>
                   Tutorials on features of the operator portal and how to use them. Please note more tutorials are available within the web app itself.
                 </p>
                 <div className="tutorial-thumbnails-container">
@@ -218,51 +238,87 @@ const Home: React.FC = () => {
               </div>
             </section>
 
-          {/* Section 7: App Hero */}
-          <section className="home-section home-section-centered" id="app-hero">
-            <h2>Parking that doesn't suck.</h2>
-            <p>Built to keep drivers informed. Not guessing. Arrive on time, because you're not stressed about parking.</p>
-            <div className="app-buttons">
-                {deviceType === 'ios' && (
-                  <>
-                    <a href="https://apps.apple.com/ca/app/parallel-mobile/id6751863179" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_ios_download.svg" alt="Download on the App Store" />
-                    </a>
-                    <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_web.svg" alt="Use on Web" />
-                    </a>
-                  </>
-                )}
-                {deviceType === 'android' && (
-                  <>
-                    <a href="https://play.google.com/store/apps/details?id=com.parkwithparallel.app" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_android_download.svg" alt="Get it on Google Play" />
-                    </a>
-                    <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_web.svg" alt="Use on Web" />
-                    </a>
-                  </>
-                )}
-                {deviceType === 'desktop' && (
-                  <>
-                    <a href="https://apps.apple.com/ca/app/parallel-mobile/id6751863179" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_ios_download.svg" alt="Download on the App Store" />
-                    </a>
-                    <a href="https://play.google.com/store/apps/details?id=com.parkwithparallel.app" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_android_download.svg" alt="Get it on Google Play" />
-                    </a>
-                    <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
-                      <img src="/assets/app_web.svg" alt="Use on Web" />
-                    </a>
-                  </>
-                )}
-            </div>
-          </section>
+          {/* Section 7: Mobile App */}
+          <section className="home-section" id="mobile-app">
+            {/* App Hero */}
+            <div className="app-hero-section">
+              <h2>Parking that doesn't suck.</h2>
+              <p className="app-hero-subtitle">
+                Built to keep drivers informed. Not guessing.
+                <br />
+                Arrive on time, because you're not stressed about parking.
+              </p>
 
-          {/* Section 8: App Features */}
-          <section className="home-section home-section-centered" id="app-features">
-            <div className="app-hero-image">
-              <img src="/assets/images/apphero.jpg" alt="Parallel App Features" />
+              <div className="app-hero-content">
+                {/* Left side: Phone mockup with notification popup */}
+                <div className="app-hero-left" ref={notificationRef}>
+                  <div className={`app-notification-popup ${notificationVisible ? 'visible' : ''}`}>
+                    <img src="/assets/app_icon.png" alt="Parallel" className="notification-logo" />
+                    <p>Drive in, Ding! All good to park. Full transparency to feel secure.</p>
+                  </div>
+                  <div className="app-phone-mockup">
+                    <img src="/assets/images/app_hero.png" alt="Parallel App" />
+                  </div>
+                </div>
+
+                {/* Right side: Content */}
+                <div className="app-hero-right">
+                  <h3>Drive in. Drive out.</h3>
+                  <div className="app-hero-text">
+                    <p>
+                      Parking is unpredictable. It can make you late, lead to unexpected tickets, or leave you unsure if you are even allowed to be there. Parallel removes that uncertainty entirely.
+                    </p>
+                    <p>
+                      Cameras automatically check you in when you arrive. All you have to do is check out. Accounts and billing can be fully automated. You have 48 hours to pay and we remind you, but parking is not free. If unpaid, your plate is flagged and future entries across Parallel lots may result in ticketing or towing. Pay once or enable autopay to stay clear.
+                    </p>
+                    <p>
+                      Look for the blue check to know you are safe to park. Everything updates in real time so there are no hidden fees or surprises.
+                    </p>
+                  </div>
+                  <div className="app-buttons">
+                    {deviceType === 'ios' && (
+                      <>
+                        <a href="https://apps.apple.com/ca/app/parallel-mobile/id6751863179" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_ios_download.svg" alt="Download on the App Store" />
+                        </a>
+                        <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_web.svg" alt="Use on Web" />
+                        </a>
+                      </>
+                    )}
+                    {deviceType === 'android' && (
+                      <>
+                        <a href="https://play.google.com/store/apps/details?id=com.parkwithparallel.app" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_android_download.svg" alt="Get it on Google Play" />
+                        </a>
+                        <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_web.svg" alt="Use on Web" />
+                        </a>
+                      </>
+                    )}
+                    {deviceType === 'desktop' && (
+                      <>
+                        <a href="https://apps.apple.com/ca/app/parallel-mobile/id6751863179" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_ios_download.svg" alt="Download on the App Store" />
+                        </a>
+                        <a href="https://play.google.com/store/apps/details?id=com.parkwithparallel.app" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_android_download.svg" alt="Get it on Google Play" />
+                        </a>
+                        <a href="https://pay.parkwithparallel.com" className="app-store-btn" target="_blank" rel="noopener noreferrer">
+                          <img src="/assets/app_web.svg" alt="Use on Web" />
+                        </a>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* App Features - existing content, do not modify */}
+            <div className="app-features-section" id="app-features">
+              <div className="app-hero-image">
+                <img src="/assets/images/apphero.jpg" alt="Parallel App Features" />
+              </div>
             </div>
           </section>
 

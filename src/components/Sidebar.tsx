@@ -33,8 +33,8 @@ type NavItem = PageNavItem | MenuNavItem | ScrollNavItem;
 // Navigation Configuration
 const NAVIGATION_CONFIG: NavItem[] = [
   { id: 'home', label: 'Home', type: 'scroll', section: 'home', homePath: '/' },
-  { id: 'app', label: 'App', type: 'scroll', section: 'mobile-app', homePath: '/' },
   { id: 'operator', label: 'Operator', type: 'scroll', section: 'operator-portal', homePath: '/' },
+  { id: 'app', label: 'App', type: 'scroll', section: 'mobile-app', homePath: '/' },
   {
     id: 'legal',
     label: 'Legal',
