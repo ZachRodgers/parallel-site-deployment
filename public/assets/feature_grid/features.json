@@ -52,22 +52,22 @@
   ],
   "largeFeatures": [
     {
-      "icon": "auto_billing.svg",
-      "text": "Auto Billing",
-      "background": "auto_billing_bg.png",
-      "backText": "Let Parallel handle the rest. We automatically calculate sessions and costs, so you never have to worry about billing again."
-    },
-    {
-      "icon": "auto_enforce.svg",
-      "text": "Auto Enforce",
-      "background": "auto_enforcement_bg.png",
-      "backText": "Saves countless hours for lot operators managing and marking violators. Meanwhile, true violators are handled automatically."
-    },
-    {
       "icon": "ai_agents.svg",
       "text": "AI Agents",
       "background": "ai_agents_bg.png",
       "backText": "Tell Parallel what to do. Add this list of names to the registry, done. Change my prices, easy. It couldn't be simpler."
+    },
+    {
+      "icon": "auto_enforce.svg",
+      "text": "Auto Enforce",
+      "background": "auto_enforce_bg.png",
+      "backText": "Saves countless hours for lot operators managing and marking violators. Meanwhile, true violators are handled automatically."
+    },
+    {
+      "icon": "auto_billing.svg",
+      "text": "Auto Billing",
+      "background": "auto_billing_bg.png",
+      "backText": "Let Parallel handle the rest. We automatically calculate sessions and costs, so you never have to worry about billing again."
     },
     {
       "icon": "data_analytics.svg",
