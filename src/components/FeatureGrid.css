@@ -217,14 +217,6 @@
 }
 
 /* Hide right line on rightmost large cells */
-.feature-cell-large[data-col="6"]::after {
-  display: none;
-}
-
-/* Hide bottom line on bottom large cells */
-.feature-cell-large[data-row="4"]::before {
-  display: none;
-}
 
 .feature-card-inner {
   position: relative;
