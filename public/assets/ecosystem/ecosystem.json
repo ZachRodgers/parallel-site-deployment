@@ -1,13 +1,13 @@
 {
   "settings": {
-    "sequenceIntervalMs": 3500,
-    "minSequenceIntervalMs": 2500,
+    "sequenceIntervalMs": 3000,
+    "minSequenceIntervalMs": 2000,
     "maxSequenceIntervalMs": 4500,
-    "lineDrawDurationMs": 700,
+    "lineDrawDurationMs": 800,
     "pulseTravelDurationMs": 500,
     "labelFadeInMs": 150,
-    "labelDisplayMs": 1000,
-    "labelFadeOutMs": 400,
+    "labelDisplayMs": 800,
+    "labelFadeOutMs": 500,
     "simultaneousActions": true,
     "randomizeSequences": true
   },

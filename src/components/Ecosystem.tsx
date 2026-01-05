@@ -460,6 +460,16 @@ const Ecosystem: React.FC<EcosystemProps> = ({
   const activeAnimations = activeAnimationsRef.current;
   const activeNodes = activeNodesRef.current;
 
+  const getGradientIdForPath = (pathKey: string) => {
+    if (pathKey === 'backend-operator' || pathKey === 'app-backend') {
+      return 'eco-line-gradient-reverse';
+    }
+    if (pathKey === 'camera-backend') {
+      return 'eco-line-gradient-vertical';
+    }
+    return 'eco-line-gradient-forward';
+  };
+
   if (isLoading || !data) {
     return null;
   }
@@ -473,10 +483,71 @@ const Ecosystem: React.FC<EcosystemProps> = ({
     >
       <svg className="ecosystem-svg" preserveAspectRatio="none">
         <defs>
-          <linearGradient id="eco-line-gradient" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="var(--color-primary)" stopOpacity="1" />
-            <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.4" />
+          <linearGradient
+            id="eco-line-gradient-forward"
+            x1="0"
+            y1="0"
+            x2="200"
+            y2="0"
+            gradientUnits="userSpaceOnUse"
+            spreadMethod="reflect"
+          >
+            <stop offset="0%" stopColor="#69CFFF" stopOpacity="1" />
+            <stop offset="45%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="100%" stopColor="#69CFFF" stopOpacity="1" />
+            <animateTransform
+              attributeName="gradientTransform"
+              type="translate"
+              from="-400 0"
+              to="400 0"
+              dur="2.4s"
+              repeatCount="indefinite"
+            />
+          </linearGradient>
+          <linearGradient
+            id="eco-line-gradient-reverse"
+            x1="0"
+            y1="0"
+            x2="200"
+            y2="0"
+            gradientUnits="userSpaceOnUse"
+            spreadMethod="reflect"
+          >
+            <stop offset="0%" stopColor="#69CFFF" stopOpacity="1" />
+            <stop offset="45%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="100%" stopColor="#69CFFF" stopOpacity="1" />
+            <animateTransform
+              attributeName="gradientTransform"
+              type="translate"
+              from="400 0"
+              to="-400 0"
+              dur="2.4s"
+              repeatCount="indefinite"
+            />
+          </linearGradient>
+          <linearGradient
+            id="eco-line-gradient-vertical"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+            spreadMethod="reflect"
+          >
+            <stop offset="0%" stopColor="#69CFFF" stopOpacity="1" />
+            <stop offset="45%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="55%" stopColor="var(--color-primary)" stopOpacity="1" />
+            <stop offset="100%" stopColor="#69CFFF" stopOpacity="1" />
+            <animateTransform
+              attributeName="gradientTransform"
+              type="translate"
+              from="0 400"
+              to="0 -400"
+              dur="2.4s"
+              repeatCount="indefinite"
+            />
           </linearGradient>
         </defs>
 
@@ -486,6 +557,7 @@ const Ecosystem: React.FC<EcosystemProps> = ({
             key={`ambient-${item.key}`}
             d={item.d}
             className="ecosystem-ambient-line"
+            stroke={`url(#${getGradientIdForPath(item.key)})`}
           />
         ))}
 
@@ -505,7 +577,7 @@ const Ecosystem: React.FC<EcosystemProps> = ({
               <path
                 d={anim.pathD}
                 className={lineClass}
-                stroke="url(#eco-line-gradient)"
+                stroke={`url(#${getGradientIdForPath(anim.pathKey)})`}
                 style={{
                   '--draw-duration': `${settings?.lineDrawDurationMs || 700}ms`,
                   '--fade-duration': `${settings?.labelFadeOutMs || 400}ms`,

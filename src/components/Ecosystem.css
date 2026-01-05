@@ -117,6 +117,8 @@
   opacity: 0;
   /* Prevent any inherited transitions */
   transition: none;
+  /* Keep the animated gradient smooth */
+  stroke-linecap: round;
 }
 
 /* Line drawing animation */
