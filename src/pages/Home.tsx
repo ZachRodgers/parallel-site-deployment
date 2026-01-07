@@ -5,6 +5,7 @@ import YoutubeVideoModal from '../components/YoutubeVideoModal';
 import TrustBadges from '../components/TrustBadges';
 import FeatureGrid from '../components/FeatureGrid';
 import Ecosystem from '../components/Ecosystem';
+import Setup from '../components/Setup';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 
 const Home: React.FC = () => {
@@ -155,6 +156,7 @@ const Home: React.FC = () => {
           <section className="home-section home-section-centered" id="setup">
             <h2>Setup everything. In minutes.</h2>
             <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
+            <Setup />
           </section>
 
           {/* Section 5: Feature Grid */}

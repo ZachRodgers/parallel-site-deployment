@@ -105,6 +105,7 @@ const Ecosystem: React.FC<EcosystemProps> = ({
   const [data, setData] = useState<EcosystemData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(true); // Start visible
+  const [isPageVisible, setIsPageVisible] = useState(!document.hidden);
   const [, forceUpdate] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -123,6 +124,13 @@ const Ecosystem: React.FC<EcosystemProps> = ({
   useEffect(() => {
     dataRef.current = data;
   }, [data]);
+
+  // Track page/tab visibility to pause animations when hidden
+  useEffect(() => {
+    const handleVisibility = () => setIsPageVisible(!document.hidden);
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
 
   // Keep dimensionsRef in sync
   useEffect(() => {
@@ -182,8 +190,8 @@ const Ecosystem: React.FC<EcosystemProps> = ({
 
   // Main animation system
   useEffect(() => {
-    console.log('Ecosystem effect: data=', !!data, 'paused=', paused, 'isVisible=', isVisible);
-    if (!data || paused || !isVisible) {
+    console.log('Ecosystem effect: data=', !!data, 'paused=', paused, 'isVisible=', isVisible, 'pageVisible=', isPageVisible);
+    if (!data || paused || !isVisible || !isPageVisible) {
       console.log('Ecosystem: Conditions not met, stopping');
       // Stop if conditions not met
       isRunningRef.current = false;
@@ -420,7 +428,7 @@ const Ecosystem: React.FC<EcosystemProps> = ({
       stepTimeoutsRef.current.forEach(t => clearTimeout(t));
       stepTimeoutsRef.current = [];
     };
-  }, [data, paused, isVisible, enablePulse]);
+  }, [data, paused, isVisible, isPageVisible, enablePulse]);
 
   // Generate ambient connection lines
   const ambientPaths = useMemo((): Array<{ key: string; d: string }> => {
