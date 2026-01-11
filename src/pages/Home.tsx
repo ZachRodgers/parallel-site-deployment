@@ -10,6 +10,8 @@ import Hero from '../components/Hero';
 import { useScrollToSection } from '../hooks/useScrollToSection';
 
 const Home: React.FC = () => {
+  const [pageLoading, setPageLoading] = useState(true);
+  const [heroReady, setHeroReady] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isVideoLoading, setIsVideoLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -21,6 +23,12 @@ const Home: React.FC = () => {
   const tutorialThumbnailsRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const { scrollToSection } = useScrollToSection();
+
+  useEffect(() => {
+    if (heroReady) {
+      setPageLoading(false);
+    }
+  }, [heroReady]);
 
   // Handle navigation from other pages
   useEffect(() => {
@@ -132,11 +140,16 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-page">
+      {(
+        <div className={`page-loading-overlay ${pageLoading ? 'page-loading-overlay--visible' : 'page-loading-overlay--hidden'}`}>
+          <LoadingLogo text="" />
+        </div>
+      )}
       <div className="home-page-container">
         <div className="home-content">
           {/* Section 1: Hero */}
           <section id="hero">
-            <Hero />
+            <Hero onIntroReady={() => setHeroReady(true)} />
           </section>
 
           {/* Section 2: Trust Badges */}
@@ -159,17 +172,15 @@ const Home: React.FC = () => {
             <Setup />
           </section>
 
-          {/* Section 5: Feature Grid */}
-          <section className="home-section home-section-centered" id="feature-grid">
-            <h2>Everything you need to manage your lot. All powered by AI.</h2>
-            <FeatureGrid />
-          </section>
-
-          {/* Section 6: Operator Portal */}
+          {/* Section 5: Operator Portal (includes Feature Grid) */}
           <section className="home-section home-section-centered" id="operator-portal">
-            <h2>The most powerful tool in parking.</h2>
+              <div className="operator-feature-grid">
+                <h2>Everything you need to manage your lot. All powered by AI.</h2>
+                <FeatureGrid />
+              </div>
+            <h2 className="operator-main-title">The most powerful tool in parking.</h2>
             <p>
-              The Parallel Operator Portal provides comprehensive tools for managing parking operations, viewing analytics, and configuring your parking solutions. Access real-time data, manage user accounts, and optimize your parking lot performance.
+              Parallel Operator provides real-time analytics, management controls, access governance, and AI to maximize performance.
             </p>
               <div className="operator-buttons">
                 <a href="/contact" className="legal-nav-link">

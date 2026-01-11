@@ -57,6 +57,10 @@ interface HeroData {
   assets: HeroAssets;
 }
 
+interface HeroProps {
+  onIntroReady?: () => void;
+}
+
 type HeroPhase =
   | 'initial'
   | 'ready'
@@ -75,7 +79,7 @@ interface DeviceState {
   videoSrc: string | null;
 }
 
-const Hero: React.FC = () => {
+const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
   // State
   const [heroData, setHeroData] = useState<HeroData | null>(null);
   const [phase, setPhase] = useState<HeroPhase>('initial');
@@ -87,11 +91,16 @@ const Hero: React.FC = () => {
 
   // Refs
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
+  const backgroundVideoRef2 = useRef<HTMLVideoElement>(null);
   const ipadVideoRef = useRef<HTMLVideoElement>(null);
   const iphoneVideoRef = useRef<HTMLVideoElement>(null);
   const videoEndResolvers = useRef<Map<string, () => void>>(new Map());
   const preloadedVideos = useRef<Set<string>>(new Set());
   const isSequenceRunning = useRef(false);
+  const backgroundVideoState = useRef<{ activeRef: React.RefObject<HTMLVideoElement>; nextRef: React.RefObject<HTMLVideoElement> }>({
+    activeRef: backgroundVideoRef,
+    nextRef: backgroundVideoRef2
+  });
 
   // Load hero.json on mount
   useEffect(() => {
@@ -117,7 +126,9 @@ const Hero: React.FC = () => {
     const handleCanPlay = () => {
       video.currentTime = 0;
       video.pause();
+      video.style.opacity = '1';
       setPhase('ready');
+      onIntroReady?.();
     };
 
     video.addEventListener('canplaythrough', handleCanPlay, { once: true });
@@ -126,7 +137,7 @@ const Hero: React.FC = () => {
     return () => {
       video.removeEventListener('canplaythrough', handleCanPlay);
     };
-  }, [heroData]);
+  }, [heroData, onIntroReady]);
 
   // Listen for first user interaction when ready
   useEffect(() => {
@@ -191,6 +202,19 @@ const Hero: React.FC = () => {
     await Promise.all(videos.map(v => preloadVideo(v, basePath)));
   }, [preloadVideo]);
 
+  // Preload background videos up front to avoid black flashes on swap
+  useEffect(() => {
+    const preloadBackgrounds = async () => {
+      if (!heroData) return;
+      try {
+        await preloadVideos(heroData.assets.backgroundVideos, heroData.assets.basePath);
+      } catch (error) {
+        console.error('Failed to preload background videos:', error);
+      }
+    };
+    preloadBackgrounds();
+  }, [heroData, preloadVideos]);
+
   // Wait for device video to end
   const waitForDeviceVideoEnd = useCallback((deviceType: 'ipad' | 'iphone'): Promise<void> => {
     return new Promise((resolve) => {
@@ -229,8 +253,8 @@ const Hero: React.FC = () => {
 
   // Execute a single step
   const executeStep = useCallback(async (step: SequenceStep, basePath: string): Promise<void> => {
-    // Handle delay for after_delay start type
-    if (step.start === 'after_delay' && step.delay > 0) {
+    // Respect delays for steps that should wait before starting
+    if ((step.start === 'after_delay' || step.start === 'after_previous') && step.delay > 0) {
       await delay(step.delay);
     }
 
@@ -238,23 +262,68 @@ const Hero: React.FC = () => {
       case 'background':
         if (step.action === 'play' && step.src) {
           const videoSrc = `${basePath}${step.src}`;
-          setCurrentBackgroundSrc(videoSrc);
-          // Wait a tick for src to update, then play
-          await delay(50);
-          if (backgroundVideoRef.current) {
-            backgroundVideoRef.current.currentTime = 0;
-            backgroundVideoRef.current.play();
-          }
+          // Ensure video is preloaded
+          await preloadVideo(step.src, basePath);
+          
+          // Get the next video element to load into
+          const nextVideoRef = backgroundVideoState.current.activeRef === backgroundVideoRef ? backgroundVideoRef2 : backgroundVideoRef;
+          const nextVideo = nextVideoRef.current;
+          
+          if (!nextVideo) break;
+          
+          // Load the new video into the inactive element
+          nextVideo.src = videoSrc;
+          nextVideo.currentTime = 0;
+          nextVideo.style.opacity = '0';
+          
+          // Wait for the video to be ready
+          await new Promise<void>((resolve) => {
+            const handleLoadedData = () => {
+              nextVideo.removeEventListener('loadeddata', handleLoadedData);
+              resolve();
+            };
+            
+            if (nextVideo.readyState >= 2) {
+              resolve();
+            } else {
+              nextVideo.addEventListener('loadeddata', handleLoadedData, { once: true });
+              // Safety timeout
+              setTimeout(() => resolve(), 500);
+            }
+          });
+          
+          // Play the prepared video
+          nextVideo.play().catch(() => {});
+          
+          // Crossfade: fade in next video on top of current
+          nextVideo.style.transition = 'opacity 0.3s ease-in-out';
+          nextVideo.style.opacity = '1';
+          
+          // Wait for crossfade to complete
+          await delay(300);
+          
+          // Remove transition for next time
+          nextVideo.style.transition = '';
+          
+          // Swap which video is active (but keep the old one playing in background)
+          backgroundVideoState.current.activeRef = nextVideoRef;
         }
         break;
 
       case 'ipad':
         if (step.action === 'raise' && step.src) {
           const videoSrc = `${basePath}${step.src}`;
-          setIpadState({ visible: true, raised: true, videoSrc });
-          // Wait for raise animation then play
-          await delay(100);
-          ipadVideoRef.current?.play();
+          // Reset to lowered state before raising so the animation always fires
+          setIpadState({ visible: true, raised: false, videoSrc });
+          requestAnimationFrame(() => {
+            setIpadState(prev => ({ ...prev, raised: true, videoSrc }));
+          });
+          // Wait briefly for the lift animation, then start playback
+          await delay(heroData?.settings.deviceRaiseDurationMs ? Math.min(heroData.settings.deviceRaiseDurationMs, 250) : 150);
+          if (ipadVideoRef.current) {
+            ipadVideoRef.current.currentTime = 0;
+            ipadVideoRef.current.play().catch(() => {});
+          }
         } else if (step.action === 'lower') {
           setIpadState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
@@ -267,9 +336,15 @@ const Hero: React.FC = () => {
       case 'iphone':
         if (step.action === 'raise' && step.src) {
           const videoSrc = `${basePath}${step.src}`;
-          setIphoneState({ visible: true, raised: true, videoSrc });
-          await delay(100);
-          iphoneVideoRef.current?.play();
+          setIphoneState({ visible: true, raised: false, videoSrc });
+          requestAnimationFrame(() => {
+            setIphoneState(prev => ({ ...prev, raised: true, videoSrc }));
+          });
+          await delay(heroData?.settings.deviceRaiseDurationMs ? Math.min(heroData.settings.deviceRaiseDurationMs, 250) : 150);
+          if (iphoneVideoRef.current) {
+            iphoneVideoRef.current.currentTime = 0;
+            iphoneVideoRef.current.play().catch(() => {});
+          }
         } else if (step.action === 'lower') {
           setIphoneState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
@@ -279,7 +354,7 @@ const Hero: React.FC = () => {
         }
         break;
     }
-  }, [heroData, waitForDeviceVideoEnd]);
+  }, [heroData, waitForDeviceVideoEnd, preloadVideo]);
 
   // Execute full sequence
   const executeSequence = useCallback(async (questionId: number) => {
@@ -375,12 +450,28 @@ const Hero: React.FC = () => {
     setPhase('fading_typewriter');
 
     // Reset background to render_0 frame 1
-    setCurrentBackgroundSrc(`${heroData.assets.basePath}${heroData.assets.introVideo}`);
+    const introVideoSrc = `${heroData.assets.basePath}${heroData.assets.introVideo}`;
+    setCurrentBackgroundSrc(introVideoSrc);
     await delay(50);
+    
+    // Reset both video elements
     if (backgroundVideoRef.current) {
+      backgroundVideoRef.current.src = introVideoSrc;
       backgroundVideoRef.current.currentTime = 0;
       backgroundVideoRef.current.pause();
+      backgroundVideoRef.current.style.opacity = '1';
     }
+    
+    if (backgroundVideoRef2.current) {
+      backgroundVideoRef2.current.src = '';
+      backgroundVideoRef2.current.currentTime = 0;
+      backgroundVideoRef2.current.pause();
+      backgroundVideoRef2.current.style.opacity = '0';
+      backgroundVideoRef2.current.style.transition = '';
+    }
+    
+    // Reset the active video state back to the first one
+    backgroundVideoState.current.activeRef = backgroundVideoRef;
 
     // Wait for fade out
     await delay(heroData.settings.blurFadeDurationMs);
@@ -406,11 +497,23 @@ const Hero: React.FC = () => {
     setIphoneState({ visible: false, raised: false, videoSrc: null });
     setCurrentBackgroundSrc(`${heroData.assets.basePath}${heroData.assets.introVideo}`);
 
-    // Reset video to first frame
+    // Reset both video elements
     if (backgroundVideoRef.current) {
       backgroundVideoRef.current.currentTime = 0;
       backgroundVideoRef.current.pause();
+      backgroundVideoRef.current.style.opacity = '1';
     }
+    
+    if (backgroundVideoRef2.current) {
+      backgroundVideoRef2.current.src = '';
+      backgroundVideoRef2.current.currentTime = 0;
+      backgroundVideoRef2.current.pause();
+      backgroundVideoRef2.current.style.opacity = '0';
+      backgroundVideoRef2.current.style.transition = '';
+    }
+    
+    // Reset the active video state back to the first one
+    backgroundVideoState.current.activeRef = backgroundVideoRef;
 
     // Back to ready state
     setPhase('ready');
@@ -441,18 +544,28 @@ const Hero: React.FC = () => {
       <div className="hero__video-layer">
         <video
           ref={backgroundVideoRef}
-          className="hero__video"
+          className="hero__video hero__video--1"
           src={currentBackgroundSrc}
           muted
           playsInline
+          preload="auto"
           onEnded={handleIntroVideoEnded}
+        />
+        <video
+          ref={backgroundVideoRef2}
+          className="hero__video hero__video--2"
+          muted
+          playsInline
+          preload="none"
         />
       </div>
 
       {/* Hero Text Overlay - visible during intro */}
       <div className={`hero__text-overlay ${showTextOverlay ? '' : 'hero__text-overlay--hidden'}`}>
         <h1 className="hero__heading">{heroData.content.heroHeading}</h1>
-        <p className="hero__description">{heroData.content.heroDescription}</p>
+        {heroData.content.heroDescription && (
+          <p className="hero__description">{heroData.content.heroDescription}</p>
+        )}
       </div>
 
       {/* Device Mockups */}

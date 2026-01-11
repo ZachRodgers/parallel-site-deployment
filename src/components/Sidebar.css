@@ -92,11 +92,15 @@
 .sidebar-link:hover {
   background-color: rgba(0, 0, 0, 0.03);
   padding: 8px 12px 8px 15px;
+  backdrop-filter: blur(4px);
+
 }
 
 .sidebar-link.active {
   background-color: rgba(0, 0, 0, 0.05);
   font-weight: 500;
+  backdrop-filter: blur(4px);
+
 }
 
 /* Back link styling */

@@ -42,7 +42,7 @@
             "style": "primary"
           },
           "secondaryButton": {
-            "label": "Parallel Mapper",
+            "label": "Try Mapper",
             "url": "https://operator.parkwithparallel.com/mapper",
             "style": "secondary"
           },
@@ -93,7 +93,7 @@
           "header": "You're in full control.",
           "text": "Your lot is setup, now, and forever. Manage everything through the operator portal. Manage revenue, price windows, and get notified anytime something happens.",
           "button": {
-            "label": "Link to Operator",
+            "label": "Open Operator",
             "url": "https://operator.parkwithparallel.com",
             "style": "primary"
           }

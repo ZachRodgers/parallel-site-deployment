@@ -1,15 +1,15 @@
 {
   "settings": {
     "typewriterSpeedMs": 40,
-    "typewriterHoldMs": 2000,
+    "typewriterHoldMs": 2200,
     "blurFadeDurationMs": 500,
-    "deviceRaiseDurationMs": 1000,
+    "deviceRaiseDurationMs": 800,
     "deviceLowerDurationMs": 800,
-    "sequenceTransitionMs": 300
+    "sequenceTransitionMs": 400
   },
   "content": {
-    "heroHeading": "Next-gen parking. Stressfree for users. Automated by AI for Operators.",
-    "heroDescription": "Parallel is beyond the future of parking, but part of the future of saving time, automation and autonomy, and user satisfaction",
+    "heroHeading": "Next-gen parking. Stress-free for users.\nAutomated by AI for operators.",
+    "heroDescription": "",
     "questionText": "Which of these issues do you face the most?",
     "parkAgainButtonText": "Park Again"
   },
@@ -56,7 +56,7 @@
           "action": "raise",
           "src": "operator_1.mp4",
           "start": "after_delay",
-          "delay": 3000
+          "delay": 6000
         },
         {
           "type": "ipad",
@@ -98,8 +98,8 @@
           "type": "ipad",
           "action": "raise",
           "src": "operator_3.mp4",
-          "start": "with_previous",
-          "delay": 0
+          "start": "after_previous",
+          "delay": 3300
         },
         {
           "type": "ipad",
@@ -118,7 +118,7 @@
           "action": "raise",
           "src": "app_3.mp4",
           "start": "after_previous",
-          "delay": 200
+          "delay": 0
         },
         {
           "type": "iphone",
@@ -142,8 +142,8 @@
           "type": "ipad",
           "action": "raise",
           "src": "operator_4.mp4",
-          "start": "with_previous",
-          "delay": 0
+          "start": "after_previous",
+          "delay": 3000
         },
         {
           "type": "ipad",
@@ -154,7 +154,7 @@
       ]
     },
     "5": {
-      "preloadVideos": ["render_5.mp4", "operator_5.mp4", "app_q5.mp4"],
+      "preloadVideos": ["render_5.mp4", "operator_5.mp4", "app_5.mp4"],
       "steps": [
         {
           "type": "ipad",
@@ -178,7 +178,7 @@
         {
           "type": "iphone",
           "action": "raise",
-          "src": "app_q5.mp4",
+          "src": "app_5.mp4",
           "start": "after_previous",
           "delay": 200
         },
@@ -186,8 +186,8 @@
           "type": "background",
           "action": "play",
           "src": "render_5.mp4",
-          "start": "with_previous",
-          "delay": 0
+          "start": "after_previous",
+          "delay": 1500
         },
         {
           "type": "iphone",

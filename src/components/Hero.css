@@ -30,18 +30,33 @@
   position: absolute;
   inset: 0;
   z-index: 1;
+  background: #fff;
 }
 
 .hero__video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: #fff;
+  display: block;
+}
+
+.hero__video--1 {
+  opacity: 1;
+  z-index: 1;
+}
+
+.hero__video--2 {
+  opacity: 0;
+  z-index: 2;
 }
 
 /* Text Overlay - shown during intro and complete */
 .hero__text-overlay {
   position: absolute;
-  top: calc(var(--topbar-height) + var(--spacing-2xl));
+  top: calc(var(--topbar-height) + var(--spacing-2xl) + 16px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
@@ -60,19 +75,13 @@
   font-size: var(--font-size-4xl);
   font-weight: 700;
   color: var(--color-text-primary);
-  text-shadow:
-    0 0 40px rgba(255, 255, 255, 0.9),
-    0 0 80px rgba(255, 255, 255, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: pre-line;
   margin-bottom: var(--spacing-md);
 }
 
 .hero__description {
   font-size: var(--font-size-xl);
   color: var(--color-text-secondary);
-  text-shadow:
-    0 0 30px rgba(255, 255, 255, 0.8),
-    0 0 60px rgba(255, 255, 255, 0.5);
 }
 
 /* Blur Overlay */
@@ -176,7 +185,7 @@
 }
 
 .hero__device--raised {
-  transform: translateY(10%);
+  transform: translateY(-20%);
   opacity: 1;
 }
 
@@ -187,12 +196,16 @@
 
 /* iPad Sizing - Very large */
 .hero__device--ipad {
-  width: 900px;
+  width: 1080px;
 }
 
 /* iPhone Sizing - Very large */
 .hero__device--iphone {
-  width: 360px;
+  width: 460px;
+}
+
+.hero__device--iphone.hero__device--raised {
+  transform: translateY(-12%);
 }
 
 /* Device Frame (the PNG image) */
@@ -214,20 +227,20 @@
 
 /* iPad screen positioning - adjust based on actual frame image */
 .hero__device--ipad .hero__device-screen {
-  top: 4.5%;
-  left: 5.8%;
-  width: 88.4%;
-  height: 91%;
-  border-radius: 8px;
+  top: 4.2%;
+  left: 3.5%;
+  width: 95%;
+  height: 91.6%;
+  border-radius: 10px;
 }
 
 /* iPhone screen positioning - adjust based on actual frame image */
 .hero__device--iphone .hero__device-screen {
-  top: 2%;
-  left: 5.5%;
-  width: 89%;
-  height: 96%;
-  border-radius: 28px;
+  top: 3.8%;
+  left: 6.3%;
+  width: 86%;
+  height: 93%;
+  border-radius: 50px;
 }
 
 /* Video inside device screen */
@@ -256,6 +269,8 @@
   font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.4;
+  min-height: 4.2em;
+  white-space: pre-line;
 }
 
 .hero__typewriter-cursor {
@@ -308,7 +323,7 @@
   position: absolute;
   inset: 0;
   z-index: 30;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -349,11 +364,11 @@
 /* Responsive Styles */
 @media (max-width: 1200px) {
   .hero__device--ipad {
-    width: 700px;
+    width: 820px;
   }
 
   .hero__device--iphone {
-    width: 280px;
+    width: 340px;
   }
 }
 
@@ -384,11 +399,11 @@
   }
 
   .hero__device--ipad {
-    width: 500px;
+    width: 560px;
   }
 
   .hero__device--iphone {
-    width: 220px;
+    width: 240px;
   }
 
   .hero__typewriter-text {
@@ -420,11 +435,11 @@
   }
 
   .hero__device--ipad {
-    width: 350px;
+    width: 360px;
   }
 
   .hero__device--iphone {
-    width: 180px;
+    width: 190px;
   }
 
   .hero__typewriter-text {

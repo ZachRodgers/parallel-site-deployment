@@ -102,7 +102,11 @@ const TextTyper: React.FC<{ messages: string[] }> = ({ messages }) => {
   );
 };
 
-const Setup: React.FC = () => {
+interface SetupProps {
+  onFirstVideoReady?: () => void;
+}
+
+const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
   const [setupData, setSetupData] = useState<SetupData | null>(null);
   const [activeTab, setActiveTab] = useState<string>('');
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
@@ -112,6 +116,9 @@ const Setup: React.FC = () => {
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const videoRef = useRef<HTMLVideoElement>(null);
   const expandedVideoRef = useRef<HTMLVideoElement>(null);
+  const firstVideoReadyRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isSetupVisible, setIsSetupVisible] = useState(false);
 
   // Load setup data from JSON
   useEffect(() => {
@@ -127,6 +134,18 @@ const Setup: React.FC = () => {
         console.error('Failed to load setup data:', error);
       });
   }, []);
+
+  useEffect(() => {
+    if (!setupData || firstVideoReadyRef.current) return;
+    const hasVideo = Object.keys(setupData.slides).some(key => {
+      const slide = setupData.slides[key];
+      return slide.areas.some((area: SetupArea) => area.type === 'media' && (area as SetupMediaArea).video);
+    });
+    if (!hasVideo) {
+      firstVideoReadyRef.current = true;
+      onFirstVideoReady?.();
+    }
+  }, [setupData, onFirstVideoReady]);
 
   // Update indicator position when active tab changes
   useEffect(() => {
@@ -163,6 +182,24 @@ const Setup: React.FC = () => {
   useEffect(() => {
     setIsVideoPlaying(true);
   }, [activeTab]);
+
+  // Only mark the setup as visible once it's on screen
+  useEffect(() => {
+    const node = containerRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          setIsSetupVisible(entry.isIntersecting);
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const handleTabClick = (tabId: string) => {
     setUserHasInteracted(true);
@@ -204,6 +241,19 @@ const Setup: React.FC = () => {
     setIsVideoPlaying(true);
   };
 
+  // Play/pause the primary video based on visibility to avoid autoplaying off-screen
+  useEffect(() => {
+    const targetVideo = expandedVideoSrc ? expandedVideoRef.current : videoRef.current;
+    if (!targetVideo) return;
+
+    if (isSetupVisible) {
+      targetVideo.play().then(() => setIsVideoPlaying(true)).catch(() => {});
+    } else {
+      targetVideo.pause();
+      setIsVideoPlaying(false);
+    }
+  }, [isSetupVisible, expandedVideoSrc]);
+
   const closeExpandedVideo = () => {
     setExpandedVideoSrc(null);
     setIsVideoPlaying(true);
@@ -237,6 +287,20 @@ const Setup: React.FC = () => {
       gridArea: area.gridArea,
     };
 
+    const handleFirstVideoLoaded = () => {
+      if (!firstVideoReadyRef.current) {
+        firstVideoReadyRef.current = true;
+        onFirstVideoReady?.();
+      }
+    };
+
+    const handleFirstVideoError = () => {
+      if (!firstVideoReadyRef.current) {
+        firstVideoReadyRef.current = true;
+        onFirstVideoReady?.();
+      }
+    };
+
     return (
       <div
         key={index}
@@ -249,10 +313,12 @@ const Setup: React.FC = () => {
               ref={videoRef}
               className="setup-video"
               style={videoStyle}
-              autoPlay
+              autoPlay={isSetupVisible}
               muted
               loop={userHasInteracted}
               playsInline
+              onLoadedData={handleFirstVideoLoaded}
+              onError={handleFirstVideoError}
               onEnded={handleVideoEnded}
             >
               <source src={area.video} type="video/mp4" />
@@ -387,7 +453,7 @@ const Setup: React.FC = () => {
 
   if (!setupData) {
     return (
-      <div className="setup-container">
+      <div className="setup-container" ref={containerRef}>
         <div className="setup-loading">Loading setup...</div>
       </div>
     );
@@ -396,7 +462,7 @@ const Setup: React.FC = () => {
   const currentSlide = setupData.slides[activeTab];
 
   return (
-    <div className="setup-container">
+    <div className="setup-container" ref={containerRef}>
       {/* Tab Navigation Bar */}
       <div className="setup-tabs-wrapper">
         <div className="setup-tabs">

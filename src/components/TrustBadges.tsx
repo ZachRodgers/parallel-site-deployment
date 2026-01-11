@@ -10,7 +10,11 @@ type LogosData = {
   logos: string[];
 };
 
-const TrustBadges: React.FC = () => {
+interface TrustBadgesProps {
+  onReady?: () => void;
+}
+
+const TrustBadges: React.FC<TrustBadgesProps> = ({ onReady }) => {
   const [logos, setLogos] = useState<string[]>([]);
   const [settings, setSettings] = useState({
     grayscale: true,
@@ -24,6 +28,13 @@ const TrustBadges: React.FC = () => {
   const isHoveredRef = useRef<boolean>(false);
   const lastTimeRef = useRef<number>(0);
   const singleSetWidthRef = useRef<number>(0);
+  const hasAnnouncedReadyRef = useRef<boolean>(false);
+  const announceReady = () => {
+    if (!hasAnnouncedReadyRef.current) {
+      hasAnnouncedReadyRef.current = true;
+      onReady?.();
+    }
+  };
 
   useEffect(() => {
     const loadLogos = async () => {
@@ -37,6 +48,7 @@ const TrustBadges: React.FC = () => {
         console.error('Unable to load trust badges:', error);
       } finally {
         setIsLoading(false);
+        announceReady();
       }
     };
     loadLogos();
@@ -51,6 +63,7 @@ const TrustBadges: React.FC = () => {
     const calculateWidth = () => {
       const fullWidth = track.scrollWidth;
       singleSetWidthRef.current = fullWidth / 3;
+      announceReady();
     };
 
     // Wait for images to load
@@ -139,7 +152,7 @@ const TrustBadges: React.FC = () => {
         img.removeEventListener('load', onImageLoad);
       });
     };
-  }, [settings.speed, settings.hover_speed, logos.length]);
+  }, [settings.speed, settings.hover_speed, logos.length, onReady]);
 
   if (isLoading) {
     return null;
