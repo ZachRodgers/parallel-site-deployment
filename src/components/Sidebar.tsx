@@ -94,6 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onCollapsedChange }) => 
   const navigate = useNavigate();
   const { activeSection, scrollToSection } = useScrollToSection();
   const [isMobile, setIsMobile] = useState(false);
+  const wasMobileRef = useRef<boolean | null>(null);
 
   // Menu transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -106,9 +107,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onCollapsedChange }) => 
     const checkMobile = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      if (mobile && !isCollapsed) {
+      const wasMobile = wasMobileRef.current;
+      if (mobile && !isCollapsed && wasMobile !== true) {
         onCollapsedChange(true);
       }
+      wasMobileRef.current = mobile;
     };
 
     checkMobile();

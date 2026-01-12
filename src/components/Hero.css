@@ -259,7 +259,7 @@
   left: 6.3%;
   width: 86%;
   height: 93%;
-  border-radius: 50px;
+  border-radius: 20px;
 }
 
 /* Video inside device screen */
@@ -498,8 +498,24 @@
 }
 
 @media (max-width: 768px) {
+  /* Hero wrapper fixes for tablet/mobile */
+  #hero {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    width: 100vw;
+    max-width: 100vw;
+    height: 80vh;
+  }
+
+  .hero {
+    width: 100vw;
+    max-width: 100vw;
+    height: 80vh;
+  }
+
   .hero__heading {
     font-size: var(--font-size-2xl);
+    transform: translateY(30px);
   }
 
   .hero__description {
@@ -513,6 +529,7 @@
   .hero__question-buttons {
     flex-direction: column;
     align-items: stretch;
+    padding: 0 var(--spacing-md);
   }
 
   .hero__question-btn {
@@ -521,14 +538,23 @@
 
   .hero__devices {
     gap: var(--spacing-lg);
+    bottom: -4%;
   }
 
   .hero__device--ipad {
-    width: 560px;
+    width: 520px;
   }
 
   .hero__device--iphone {
-    width: 240px;
+    width: 220px;
+  }
+
+  .hero__device--raised {
+    transform: translateY(-24%);
+  }
+
+  .hero__device--iphone.hero__device--raised {
+    transform: translateY(-18%);
   }
 
   .hero__typewriter-text {
@@ -537,13 +563,31 @@
 }
 
 @media (max-width: 480px) {
+  /* Hero wrapper fixes for mobile */
+  #hero {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    width: 100vw;
+    max-width: 100vw;
+    height: 80vh;
+  }
+
+  .hero {
+    width: 100vw;
+    max-width: 100vw;
+    height: 80vh;
+  }
+
   .hero__text-overlay {
     top: calc(var(--topbar-height) + var(--spacing-lg));
     padding: 0 var(--spacing-md);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hero__heading {
     font-size: var(--font-size-xl);
+    transform: translateY(20px);
   }
 
   .hero__description {
@@ -552,6 +596,8 @@
 
   .hero__question {
     padding: var(--spacing-lg);
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hero__question-text {
@@ -567,8 +613,22 @@
     width: 190px;
   }
 
+  .hero__devices {
+    gap: var(--spacing-md);
+    bottom: -2%;
+  }
+
+  .hero__device--raised {
+    transform: translateY(-26%);
+  }
+
+  .hero__device--iphone.hero__device--raised {
+    transform: translateY(-20%);
+  }
+
   .hero__typewriter-text {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
+    min-height: 3em;
   }
 
   .hero__park-again-btn {
@@ -594,6 +654,10 @@
     width: 2px;
     height: 4px;
     top: 3px;
+  }
+
+  .hero__blur-overlay {
+    padding: var(--spacing-md);
   }
 }
 

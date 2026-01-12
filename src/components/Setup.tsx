@@ -119,6 +119,7 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
   const firstVideoReadyRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSetupVisible, setIsSetupVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Load setup data from JSON
   useEffect(() => {
@@ -182,6 +183,13 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
   useEffect(() => {
     setIsVideoPlaying(true);
   }, [activeTab]);
+
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
 
   // Only mark the setup as visible once it's on screen
   useEffect(() => {
@@ -451,6 +459,24 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
     return renderTextArea(area as SetupTextArea, index);
   };
 
+  const getTabLabel = (tab: SetupTab) => {
+    if (!isMobile) return tab.label;
+    switch (tab.id) {
+      case 'purchase':
+        return 'Buy';
+      case 'install':
+        return 'Install';
+      case 'manage':
+        return 'Manage';
+      case 'analytics':
+        return 'Analytics';
+      case 'ai-agents':
+        return 'AI';
+      default:
+        return tab.label;
+    }
+  };
+
   if (!setupData) {
     return (
       <div className="setup-container" ref={containerRef}>
@@ -476,7 +502,7 @@ const Setup: React.FC<SetupProps> = ({ onFirstVideoReady }) => {
               className={`setup-tab ${activeTab === tab.id ? 'active' : ''}`}
               onClick={() => handleTabClick(tab.id)}
             >
-              <span className="setup-tab-label">{tab.label}</span>
+              <span className="setup-tab-label">{getTabLabel(tab)}</span>
             </button>
           ))}
         </div>

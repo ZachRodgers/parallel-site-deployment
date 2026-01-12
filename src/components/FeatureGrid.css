@@ -333,42 +333,78 @@
 
 @media (max-width: 600px) {
   .feature-grid-wrapper {
-    --grid-padding: 10px;
+    --grid-padding: var(--spacing-sm);
+    padding: 0 var(--grid-padding);
+    max-width: 100%;
+    overflow: hidden;
   }
 
+  /* Hide fade overlays on mobile */
   .feature-grid-wrapper::before,
   .feature-grid-wrapper::after {
-    width: 60px;
+    display: none;
   }
 
-  .feature-icon {
-    width: 16px;
-    height: 16px;
+  /* Hide border lines on mobile */
+  .feature-grid-line {
+    display: none;
   }
 
-  .feature-text {
-    font-size: 7px;
+  /* Mobile: 2x2 grid with only large features */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    aspect-ratio: 1 / 1;
+    max-width: 100%;
   }
 
-  .feature-large-text {
-    font-size: 12px;
+  /* Hide all small cells on mobile */
+  .feature-cell-small {
+    display: none !important;
   }
 
-  .feature-large-icon {
-    width: 14px;
-    height: 14px;
+  /* Show only large cells in 2x2 grid */
+  .feature-cell-large {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    aspect-ratio: 1 / 1;
   }
 
-  .feature-large-label {
-    gap: 4px;
+  /* Remove internal dividers on mobile */
+  .feature-cell-large::after,
+  .feature-cell-large::before {
+    display: none;
   }
 
   .feature-card-front {
-    padding-bottom: 8px;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .feature-large-label {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .feature-large-text {
+    font-size: var(--font-size-sm);
+    text-align: center;
+  }
+
+  .feature-large-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .feature-card-back {
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
   }
 
   .feature-back-text {
-    font-size: 10px;
-    padding: 8px;
+    font-size: var(--font-size-xs) !important;
+    padding: var(--spacing-xs);
   }
 }

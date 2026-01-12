@@ -508,8 +508,26 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .home-page {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .home-page-container {
     padding: var(--spacing-lg) var(--spacing-sm);
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .home-content {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Hide Ecosystem and TrustBadges sections on mobile */
+  #ecosystem,
+  #trust-badges {
+    display: none !important;
   }
 
   .hero-video-wrapper {
@@ -643,6 +661,35 @@
   .operator-screenshots {
     gap: var(--spacing-sm);
     margin: var(--spacing-lg) 0;
+    max-width: 100%;
+  }
+
+  .operator-screenshots img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Constrain operator section width */
+  .operator-feature-grid {
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: var(--spacing-xl);
+  }
+
+  /* App hero image constraints */
+  .app-hero-image {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .app-hero-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* App hero text constraints */
+  .app-hero-text {
+    margin-left: 0;
   }
 
   .tutorial-thumbnails-container {
@@ -732,14 +779,30 @@
 @media (max-width: 480px) {
   .home-page-container {
     padding: var(--spacing-md) var(--spacing-sm);
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .home-content {
+    gap: var(--spacing-xl);
   }
 
   .hero-video-wrapper {
     padding: 0 var(--spacing-xs);
+    max-width: 100%;
   }
 
   .home-section-title {
     font-size: var(--font-size-lg);
+  }
+
+  .home-section-centered h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .home-section-centered p {
+    font-size: var(--font-size-sm);
+    padding: 0 var(--spacing-sm);
   }
 
   .hero-video-wrapper {
@@ -779,6 +842,20 @@
   .operator-screenshots {
     gap: var(--spacing-sm);
     margin: var(--spacing-md) 0;
+    max-width: 100%;
+  }
+
+  .operator-feature-grid {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .operator-buttons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .operator-buttons .legal-nav-link {
+    width: 100%;
   }
 
   .tutorial-thumbnails {
@@ -793,5 +870,48 @@
   .play-button {
     width: 50px;
     height: 50px;
+  }
+
+  /* App section mobile fixes */
+  .app-hero-section h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  .app-hero-subtitle {
+    font-size: var(--font-size-sm);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .app-phone-mockup {
+    max-width: 200px;
+    padding: var(--spacing-md);
+  }
+
+  .app-notification-popup {
+    width: 260px;
+    font-size: var(--font-size-xs);
+  }
+
+  .app-hero-right h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  .app-hero-text p {
+    font-size: var(--font-size-sm);
+  }
+
+  .app-buttons {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  .app-store-btn {
+    min-height: 50px;
+  }
+
+  /* Highlight box mobile */
+  .home-highlight {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
   }
 }

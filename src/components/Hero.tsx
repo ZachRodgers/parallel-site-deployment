@@ -22,6 +22,7 @@ interface HeroContent {
 interface HeroQuestion {
   id: number;
   label: string;
+  mobileLabel?: string;
   finalStatement: string;
   icon?: string;
 }
@@ -90,6 +91,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   const [iphoneState, setIphoneState] = useState<DeviceState>({ visible: false, raised: false, videoSrc: null });
   const [currentBackgroundSrc, setCurrentBackgroundSrc] = useState<string>('');
   const [hasSeenQuestions, setHasSeenQuestions] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Refs
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
@@ -119,6 +121,14 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     loadHeroData();
   }, []);
 
+  // Track mobile viewport to gate mobile-only behavior
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    updateIsMobile();
+    window.addEventListener('resize', updateIsMobile);
+    return () => window.removeEventListener('resize', updateIsMobile);
+  }, []);
+
   // Preload initial video and set to first frame
   useEffect(() => {
     if (!heroData || !backgroundVideoRef.current) return;
@@ -145,6 +155,12 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   useEffect(() => {
     if (phase !== 'ready') return;
 
+    if (isMobile) {
+      setPhase('intro');
+      backgroundVideoRef.current?.play();
+      return;
+    }
+
     const handleInteraction = () => {
       setPhase('intro');
       backgroundVideoRef.current?.play();
@@ -156,7 +172,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     return () => {
       events.forEach(e => window.removeEventListener(e, handleInteraction));
     };
-  }, [phase]);
+  }, [phase, isMobile]);
 
   // Handle intro video ended
   const handleIntroVideoEnded = useCallback(() => {
@@ -703,7 +719,9 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
                       aria-hidden="true"
                     />
                   )}
-                  <span className="hero__question-label">{q.label}</span>
+                  <span className="hero__question-label">
+                    {isMobile && q.mobileLabel ? q.mobileLabel : q.label}
+                  </span>
                 </button>
               ))}
             </div>
