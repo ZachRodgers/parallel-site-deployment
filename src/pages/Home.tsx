@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Home.css';
 import LoadingLogo from '../components/LoadingLogo';
-import YoutubeVideoModal from '../components/YoutubeVideoModal';
 import TrustBadges from '../components/TrustBadges';
 import FeatureGrid from '../components/FeatureGrid';
 import Ecosystem from '../components/Ecosystem';
@@ -12,15 +11,11 @@ import { useScrollToSection } from '../hooks/useScrollToSection';
 const Home: React.FC = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isVideoLoading, setIsVideoLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState<{ id: string; title: string } | null>(null);
+  // Demo video and tutorial videos are disabled to avoid loading large media assets.
   const [deviceType, setDeviceType] = useState<'ios' | 'android' | 'desktop'>('desktop');
-  const [showTutorialScrollArrow, setShowTutorialScrollArrow] = useState(false);
+  // Tutorial thumbnails and arrows are disabled to avoid loading tutorial assets
   const [notificationVisible, setNotificationVisible] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const tutorialThumbnailsRef = useRef<HTMLDivElement>(null);
+  // videoRef disabled because demo video section is commented out
   const notificationRef = useRef<HTMLDivElement>(null);
   const { scrollToSection } = useScrollToSection();
 
@@ -68,19 +63,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  // Check if scroll arrows should be shown
-  useEffect(() => {
-    const checkScrollArrows = () => {
-      if (tutorialThumbnailsRef.current) {
-        const { scrollWidth, clientWidth } = tutorialThumbnailsRef.current;
-        setShowTutorialScrollArrow(scrollWidth > clientWidth);
-      }
-    };
-
-    checkScrollArrows();
-    window.addEventListener('resize', checkScrollArrows);
-    return () => window.removeEventListener('resize', checkScrollArrows);
-  }, []);
+  // Tutorial thumbnails and scroll arrows are disabled to avoid loading tutorial assets
 
   // Notification popup scroll animation
   useEffect(() => {
@@ -100,43 +83,69 @@ const Home: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToEnd = (ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current) {
-      ref.current.scrollTo({
-        left: ref.current.scrollWidth,
-        behavior: 'smooth'
+  // Animate sections on scroll
+  useEffect(() => {
+    const sections = document.querySelectorAll('.home-section');
+    const animationObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Add a small delay for staggered effect
+            setTimeout(() => {
+              entry.target.classList.add('animate-in');
+            }, 50);
+            // Stop observing once animation has been triggered
+            animationObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    sections.forEach((section) => {
+      animationObserver.observe(section);
+    });
+
+    return () => {
+      sections.forEach((section) => {
+        animationObserver.unobserve(section);
       });
-    }
-  };
+    };
+  }, []);
 
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
+  // Animate operator screenshots and app content independently
+  useEffect(() => {
+    const animatableElements = document.querySelectorAll('.operator-screenshots, .app-hero-content');
+    const elementObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add('animate-in');
+            }, 50);
+            elementObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-  const handleVideoLoad = () => {
-    setIsVideoLoading(false);
-  };
+    animatableElements.forEach((element) => {
+      elementObserver.observe(element);
+    });
 
-  const handleVideoError = () => {
-    setIsVideoLoading(false);
-  };
+    return () => {
+      animatableElements.forEach((element) => {
+        elementObserver.unobserve(element);
+      });
+    };
+  }, []);
 
-  const openVideoModal = (videoId: string, title: string) => {
-    setCurrentVideo({ id: videoId, title });
-    setModalOpen(true);
-  };
+  // scrollToEnd disabled because tutorial thumbnails are disabled
 
-  const closeVideoModal = () => {
-    setModalOpen(false);
-    setCurrentVideo(null);
-  };
+  // play/pause and video load handlers removed because demo video is disabled
+
+  // Video modal functions disabled because tutorial videos are not rendered
 
   return (
     <div className="home-page">
@@ -152,24 +161,24 @@ const Home: React.FC = () => {
             <Hero onIntroReady={() => setHeroReady(true)} />
           </section>
 
-          {/* Section 2: Trust Badges */}
-          <section className="home-section home-section-centered" id="trust-badges">
-            <h2>Trusted by parking lots worldwild.</h2>
-            <TrustBadges />
+          {/* Section 2: Setup */}
+          <section className="home-section home-section-centered" id="setup">
+            <h2>Setup everything. In minutes.</h2>
+            <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
+            <Setup />
           </section>
 
-          {/* Section 3: Ecosystem */}
+          {/* Section 3: Ecosystem (moved after Setup) */}
           <section className="home-section home-section-centered" id="ecosystem">
             <h2>One platform. One ecosystem.</h2>
             <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
             <Ecosystem animateOnVisible={true} />
           </section>
 
-          {/* Section 4: Setup */}
-          <section className="home-section home-section-centered" id="setup">
-            <h2>Setup everything. In minutes.</h2>
-            <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
-            <Setup />
+          {/* Section 4: Trust Badges (moved after Ecosystem) */}
+          <section className="home-section home-section-centered" id="trust-badges">
+            <h2>Trusted by parking lots worldwild.</h2>
+            <TrustBadges />
           </section>
 
           {/* Section 5: Operator Portal (includes Feature Grid) */}
@@ -202,57 +211,12 @@ const Home: React.FC = () => {
                 </p>
               </div>
 
-              <div className="operator-tutorials">
-                <h2>Operator Tutorials</h2>
-                <p>
-                  Tutorials on features of the operator portal and how to use them. Please note more tutorials are available within the web app itself.
-                </p>
-                <div className="tutorial-thumbnails-container">
-                  <div className="tutorial-thumbnails" ref={tutorialThumbnailsRef}>
-                    <div className="tutorial-thumbnail" onClick={() => openVideoModal('V2lEswZgZEw', 'Dashboard Tutorial')}>
-                      <img src="/assets/images/tutorial_thumnail_dashboard.jpg" alt="Dashboard Tutorial" />
-                      <div className="play-button-overlay">
-                        <button className="play-button" aria-label="Play Dashboard Tutorial">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5v14l11-7z" fill="white" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="tutorial-thumbnail" onClick={() => openVideoModal('D4K5Z3psYAI', 'Registry Tutorial')}>
-                      <img src="/assets/images/tutorial_thumnail_registry.jpg" alt="Registry Tutorial" />
-                      <div className="play-button-overlay">
-                        <button className="play-button" aria-label="Play Registry Tutorial">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5v14l11-7z" fill="white" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="tutorial-thumbnail" onClick={() => openVideoModal('HoAepPFQdG8', 'Advanced Settings Tutorial')}>
-                      <img src="/assets/images/tutorial_thumnail_advanced.jpg" alt="Advanced Settings Tutorial" />
-                      <div className="play-button-overlay">
-                        <button className="play-button" aria-label="Play Advanced Settings Tutorial">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5v14l11-7z" fill="white" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  {showTutorialScrollArrow && (
-                    <button
-                      className="scroll-arrow scroll-arrow-right"
-                      onClick={() => scrollToEnd(tutorialThumbnailsRef)}
-                      aria-label="Scroll to see more tutorials"
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-              </div>
+              {/* Operator Tutorials disabled to avoid loading tutorial assets */}
+              {/**
+               * Operator Tutorials are intentionally disabled to prevent loading
+               * tutorial thumbnails and video assets. If you want to re-enable
+               * them later, uncomment the block below and remove these comments.
+               */}
             </section>
 
           {/* Section 7: Mobile App */}
@@ -339,63 +303,14 @@ const Home: React.FC = () => {
             </div>
           </section>
 
-          {/* Section 9: Demo Video */}
-          <section id="demo-video" className="home-section home-section-centered">
-            <h2>Everything just works.</h2>
-            <p>Drive in. Session Start. Alert User. Pay Bill. Collect Data.</p>
-            <div className="hero-video-wrapper">
-              <div className="hero-video-container">
-                {isVideoLoading && (
-                  <div className="video-loading-overlay">
-                    <LoadingLogo text="Loading video..." />
-                  </div>
-                )}
-                <video
-                  ref={videoRef}
-                  className="hero-video"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster="/assets/images/apphero.jpg"
-                  onLoadedData={handleVideoLoad}
-                  onError={handleVideoError}
-                  style={{ opacity: isVideoLoading ? 0 : 1 }}
-                >
-                  <source src="/assets/images/all_video.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <button
-                  className="video-control-btn"
-                  onClick={togglePlayPause}
-                  aria-label={isPlaying ? "Pause video" : "Play video"}
-                  style={{ opacity: isVideoLoading ? 0 : 1 }}
-                >
-                  {isPlaying ? (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="6" y="4" width="4" height="16" fill="white" />
-                      <rect x="14" y="4" width="4" height="16" fill="white" />
-                    </svg>
-                  ) : (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M8 5v14l11-7z" fill="white" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-          </section>
+          {/* Demo video section disabled to avoid loading large video asset.
+             To re-enable: restore the section and related handlers above. */}
         </div>
       </div>
 
-      {currentVideo && (
-        <YoutubeVideoModal
-          isOpen={modalOpen}
-          onClose={closeVideoModal}
-          videoId={currentVideo.id}
-          title={currentVideo.title}
-        />
-      )}
+      {/* YoutubeVideoModal is disabled to avoid loading YouTube iframe or tutorial assets.
+          If you want to re-enable video modals later, restore the related state,
+          functions and import at the top of this file. */}
     </div>
   );
 };

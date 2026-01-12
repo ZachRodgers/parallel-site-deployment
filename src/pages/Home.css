@@ -1,5 +1,17 @@
 /* Home Page Specific Styles */
 
+/* Fade-in-up animation for sections */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .home-page {
   background: var(--color-background);
   color: var(--color-text);
@@ -23,6 +35,23 @@
 
 .home-section {
   scroll-margin-top: var(--spacing-xl);
+  opacity: 0;
+  transition: none;
+}
+
+.home-section.animate-in {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Additional animatable elements within sections */
+.operator-screenshots,
+.app-hero-content {
+  opacity: 0;
+}
+
+.operator-screenshots.animate-in,
+.app-hero-content.animate-in {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .home-section-centered {
