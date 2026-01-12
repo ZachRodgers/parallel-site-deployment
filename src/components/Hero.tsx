@@ -89,6 +89,7 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
   const [ipadState, setIpadState] = useState<DeviceState>({ visible: false, raised: false, videoSrc: null });
   const [iphoneState, setIphoneState] = useState<DeviceState>({ visible: false, raised: false, videoSrc: null });
   const [currentBackgroundSrc, setCurrentBackgroundSrc] = useState<string>('');
+  const [hasSeenQuestions, setHasSeenQuestions] = useState(false);
 
   // Refs
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
@@ -484,8 +485,60 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
 
   // Handle question button click
   const handleQuestionClick = useCallback((questionId: number) => {
+    setHasSeenQuestions(true);
     executeSequence(questionId);
   }, [executeSequence]);
+
+  // Handle return to options
+  const handleReturnToOptions = useCallback(() => {
+    if (!heroData) return;
+
+    // Stop sequence
+    isSequenceRunning.current = false;
+
+    // Clear video end resolvers
+    videoEndResolvers.current.clear();
+
+    // Lower and hide devices
+    setIpadState({ visible: false, raised: false, videoSrc: null });
+    setIphoneState({ visible: false, raised: false, videoSrc: null });
+
+    // Clear typewriter
+    setTypewriterText('');
+    setSelectedQuestion(null);
+
+    // Reset background to render_0 frame 1
+    const introVideoSrc = `${heroData.assets.basePath}${heroData.assets.introVideo}`;
+    setCurrentBackgroundSrc(introVideoSrc);
+
+    if (backgroundVideoRef.current) {
+      backgroundVideoRef.current.src = introVideoSrc;
+      backgroundVideoRef.current.currentTime = 0;
+      backgroundVideoRef.current.pause();
+      backgroundVideoRef.current.style.opacity = '1';
+    }
+
+    if (backgroundVideoRef2.current) {
+      backgroundVideoRef2.current.src = '';
+      backgroundVideoRef2.current.currentTime = 0;
+      backgroundVideoRef2.current.pause();
+      backgroundVideoRef2.current.style.opacity = '0';
+      backgroundVideoRef2.current.style.transition = '';
+    }
+
+    backgroundVideoState.current.activeRef = backgroundVideoRef;
+
+    // Go back to question phase
+    setPhase('question');
+  }, [heroData]);
+
+  // Handle scroll down to learn more
+  const handleScrollToLearnMore = useCallback(() => {
+    const trustBadgesSection = document.getElementById('trust-badges');
+    if (trustBadgesSection) {
+      trustBadgesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, []);
 
   // Reset to initial state (Park Again)
   const handleParkAgain = useCallback(() => {
@@ -538,6 +591,14 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
   const showLoading = phase === 'loading_sequence';
   const showTypewriter = phase === 'typewriter' || phase === 'fading_typewriter';
   const showParkAgain = phase === 'complete';
+  const showReturnToOptions = hasSeenQuestions && (
+    phase === 'loading_sequence' ||
+    phase === 'playing_sequence' ||
+    phase === 'lowering_devices' ||
+    phase === 'typewriter' ||
+    phase === 'fading_typewriter' ||
+    phase === 'complete'
+  );
 
   return (
     <div className="hero">
@@ -660,6 +721,19 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
         )}
       </div>
 
+      {/* Return to Options Button - top of screen */}
+      {showReturnToOptions && (
+        <button
+          className="hero__return-btn"
+          onClick={handleReturnToOptions}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Return to options
+        </button>
+      )}
+
       {/* Park Again Button - directly on video, no blur */}
       {showParkAgain && (
         <div className="hero__park-again">
@@ -668,6 +742,15 @@ const Hero: React.FC<HeroProps> = ({ onIntroReady }) => {
             onClick={handleParkAgain}
           >
             {heroData.content.parkAgainButtonText}
+          </button>
+          <button
+            className="hero__scroll-hint"
+            onClick={handleScrollToLearnMore}
+          >
+            <div className="hero__scroll-mouse">
+              <div className="hero__scroll-wheel" />
+            </div>
+            <span>or scroll down to learn more</span>
           </button>
         </div>
       )}
