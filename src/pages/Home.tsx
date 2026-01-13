@@ -11,7 +11,6 @@ import { useScrollToSection } from '../hooks/useScrollToSection';
 const Home: React.FC = () => {
   const [pageLoading, setPageLoading] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
-  const [setupReady, setSetupReady] = useState(false);
   const [showBypassButton, setShowBypassButton] = useState(false);
   const [loadingBypassed, setLoadingBypassed] = useState(false);
   // Demo video and tutorial videos are disabled to avoid loading large media assets.
@@ -28,19 +27,15 @@ const Home: React.FC = () => {
     setHeroReady(true);
   }, []);
 
-  // Stable callback for Setup first video ready
-  const handleSetupReady = useCallback(() => {
-    setSetupReady(true);
-  }, []);
-
   // Handle bypass button click
   const handleBypassLoading = useCallback(() => {
     setLoadingBypassed(true);
   }, []);
 
-  // Remove loading overlay when BOTH videos are ready OR bypass was triggered
+  // Remove loading overlay when Hero intro video is ready OR bypass was triggered
+  // Setup video loads in background - no need to block the whole page for it
   useEffect(() => {
-    if ((heroReady && setupReady) || loadingBypassed) {
+    if (heroReady || loadingBypassed) {
       setPageLoading(false);
       // Clear the timeout if loading completed
       if (loadingTimeoutRef.current) {
@@ -48,7 +43,7 @@ const Home: React.FC = () => {
         loadingTimeoutRef.current = null;
       }
     }
-  }, [heroReady, setupReady, loadingBypassed]);
+  }, [heroReady, loadingBypassed]);
 
   // Show bypass button after 10 seconds of loading
   useEffect(() => {
@@ -221,7 +216,7 @@ const Home: React.FC = () => {
           <section className="home-section home-section-centered" id="setup">
             <h2>Setup everything. In minutes.</h2>
             <p>Let parallel do the heavy lifting, simple setup, then sitback, and relax.</p>
-            <Setup onFirstVideoReady={handleSetupReady} startDeferredPreload={!pageLoading} />
+            <Setup startDeferredPreload={!pageLoading} />
           </section>
 
           {/* Section 3: Ecosystem (moved after Setup) */}
