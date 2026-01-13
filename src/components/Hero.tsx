@@ -10,6 +10,7 @@ interface HeroSettings {
   deviceRaiseDurationMs: number;
   deviceLowerDurationMs: number;
   sequenceTransitionMs: number;
+  commentaryDisplayMs: number;
 }
 
 interface HeroContent {
@@ -33,6 +34,7 @@ interface SequenceStep {
   src?: string;
   start: 'immediate' | 'with_previous' | 'after_previous' | 'after_delay';
   delay: number;
+  commentary_text?: string;
 }
 
 interface Sequence {
@@ -92,6 +94,9 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   const [currentBackgroundSrc, setCurrentBackgroundSrc] = useState<string>('');
   const [hasSeenQuestions, setHasSeenQuestions] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [commentaryText, setCommentaryText] = useState('');
+  const [commentaryVisible, setCommentaryVisible] = useState(false);
+  const commentaryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Refs
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
@@ -260,6 +265,30 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
   // Delay utility
   const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
+  // Show commentary text with configurable display time and smooth fade
+  const showCommentary = useCallback(async (text: string): Promise<void> => {
+    if (!text || !heroData) return;
+
+    // Clear any existing timeout
+    if (commentaryTimeoutRef.current) {
+      clearTimeout(commentaryTimeoutRef.current);
+    }
+
+    // Set text and fade in
+    setCommentaryText(text);
+    setCommentaryVisible(true);
+
+    // After configured duration, start fade out
+    const displayMs = heroData.settings.commentaryDisplayMs || 3000;
+    commentaryTimeoutRef.current = setTimeout(() => {
+      setCommentaryVisible(false);
+      // Give time for fade-out animation
+      commentaryTimeoutRef.current = setTimeout(() => {
+        setCommentaryText('');
+      }, 300);
+    }, displayMs);
+  }, [heroData]);
+
   // Typewriter animation
   const runTypewriter = useCallback(async (text: string, speedMs: number): Promise<void> => {
     setTypewriterText('');
@@ -313,6 +342,11 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
           // Play the prepared video
           nextVideo.play().catch(() => {});
           
+          // Show commentary if provided
+          if (step.commentary_text) {
+            showCommentary(step.commentary_text);
+          }
+          
           // Crossfade: fade in next video on top of current
           nextVideo.style.transition = 'opacity 0.3s ease-in-out';
           nextVideo.style.opacity = '1';
@@ -342,6 +376,10 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
             ipadVideoRef.current.currentTime = 0;
             ipadVideoRef.current.play().catch(() => {});
           }
+          // Show commentary if provided
+          if (step.commentary_text) {
+            showCommentary(step.commentary_text);
+          }
         } else if (step.action === 'lower') {
           setIpadState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
@@ -363,6 +401,10 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
             iphoneVideoRef.current.currentTime = 0;
             iphoneVideoRef.current.play().catch(() => {});
           }
+          // Show commentary if provided
+          if (step.commentary_text) {
+            showCommentary(step.commentary_text);
+          }
         } else if (step.action === 'lower') {
           setIphoneState(prev => ({ ...prev, raised: false }));
           await delay(heroData?.settings.deviceLowerDurationMs || 400);
@@ -372,7 +414,7 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
         }
         break;
     }
-  }, [heroData, waitForDeviceVideoEnd, preloadVideo]);
+  }, [heroData, waitForDeviceVideoEnd, preloadVideo, showCommentary]);
 
   // Execute full sequence
   const executeSequence = useCallback(async (questionId: number) => {
@@ -456,6 +498,13 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     setIpadState({ visible: false, raised: false, videoSrc: null });
     setIphoneState({ visible: false, raised: false, videoSrc: null });
 
+    // Clear commentary before typewriter phase
+    if (commentaryTimeoutRef.current) {
+      clearTimeout(commentaryTimeoutRef.current);
+    }
+    setCommentaryText('');
+    setCommentaryVisible(false);
+
     // Show typewriter with blur overlay
     setPhase('typewriter');
     await delay(300); // Brief pause before typing
@@ -515,6 +564,13 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     // Clear video end resolvers
     videoEndResolvers.current.clear();
 
+    // Clear commentary
+    if (commentaryTimeoutRef.current) {
+      clearTimeout(commentaryTimeoutRef.current);
+    }
+    setCommentaryText('');
+    setCommentaryVisible(false);
+
     // Lower and hide devices
     setIpadState({ visible: false, raised: false, videoSrc: null });
     setIphoneState({ visible: false, raised: false, videoSrc: null });
@@ -563,6 +619,11 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
     // Reset all state
     setSelectedQuestion(null);
     setTypewriterText('');
+    if (commentaryTimeoutRef.current) {
+      clearTimeout(commentaryTimeoutRef.current);
+    }
+    setCommentaryText('');
+    setCommentaryVisible(false);
     setIpadState({ visible: false, raised: false, videoSrc: null });
     setIphoneState({ visible: false, raised: false, videoSrc: null });
     setCurrentBackgroundSrc(`${heroData.assets.basePath}${heroData.assets.introVideo}`);
@@ -690,6 +751,21 @@ const Hero: React.FC<HeroProps> = React.memo(({ onIntroReady }) => {
           </div>
         )}
       </div>
+
+      {/* Commentary Text - positioned based on what's visible - DISABLED */}
+      {/* Uncomment the block below to re-enable commentary text feature
+      {commentaryText && (
+        <div className={`hero__commentary ${commentaryVisible ? 'hero__commentary--visible' : 'hero__commentary--hidden'} ${
+          currentBackgroundSrc && !ipadState.visible && !iphoneState.visible ? 'hero__commentary--background' : ''
+        } ${
+          ipadState.visible ? 'hero__commentary--ipad' : ''
+        } ${
+          iphoneState.visible ? 'hero__commentary--iphone' : ''
+        }`}>
+          <p className="hero__commentary-text">{commentaryText}</p>
+        </div>
+      )}
+      */}
 
       {/* Blur Overlay with Question/Typewriter */}
       <div className={`hero__blur-overlay ${showBlurOverlay ? 'hero__blur-overlay--visible' : ''} ${isFadingBlur ? 'hero__blur-overlay--fading' : ''}`}>

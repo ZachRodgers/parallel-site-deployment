@@ -180,13 +180,7 @@ const Home: React.FC = () => {
             <Ecosystem animateOnVisible={true} />
           </section>
 
-          {/* Section 4: Trust Badges (moved after Ecosystem) */}
-          <section className="home-section home-section-centered" id="trust-badges">
-            <h2>Trusted by parking lots worldwild.</h2>
-            <TrustBadges />
-          </section>
-
-          {/* Section 5: Operator Portal (includes Feature Grid) */}
+          {/* Section 4: Operator Portal (includes Feature Grid) */}
           <section className="home-section home-section-centered" id="operator-portal">
               <div className="operator-feature-grid">
                 <h2>Everything you need to manage your lot. All powered by AI.</h2>
@@ -196,6 +190,10 @@ const Home: React.FC = () => {
             <p>
               Parallel Operator provides real-time analytics, management controls, access governance, and AI to maximize performance.
             </p>
+              {/* <h2>Trusted by companies worldwild.</h2> */}
+              <div className="operator-trust-badges" id="trust-badges">
+                <TrustBadges />
+              </div>
               <div className="operator-buttons">
                 <a href="/contact" className="legal-nav-link">
                   Request a Demo

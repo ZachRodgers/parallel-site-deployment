@@ -5,7 +5,8 @@
     "blurFadeDurationMs": 500,
     "deviceRaiseDurationMs": 800,
     "deviceLowerDurationMs": 800,
-    "sequenceTransitionMs": 400
+    "sequenceTransitionMs": 400,
+    "commentaryDisplayMs": 3000
   },
   "content": {
     "heroHeading": "Next-gen parking. Stress-free for users.\nAutomated by AI for operators.",
@@ -66,7 +67,8 @@
           "action": "raise",
           "src": "operator_1.mp4",
           "start": "after_delay",
-          "delay": 6000
+          "delay": 6000,
+          "commentary_text": "Daily and hourly analytics.\nVisualize, Download or Ask AI"
         },
         {
           "type": "ipad",
@@ -84,7 +86,8 @@
           "action": "raise",
           "src": "operator_2.mp4",
           "start": "immediate",
-          "delay": 0
+          "delay": 0,
+          "commentary_text": "Ask AI to change Settings,\nPricing, Registry and more"
         },
         {
           "type": "ipad",
@@ -102,14 +105,16 @@
           "action": "play",
           "src": "render_3.mp4",
           "start": "immediate",
-          "delay": 0
+          "delay": 0,
+          "commentary_text": "Our tech runs your lot"
         },
         {
           "type": "ipad",
           "action": "raise",
           "src": "operator_3.mp4",
           "start": "after_previous",
-          "delay": 3300
+          "delay": 3300,
+          "commentary_text": "We give you the data"
         },
         {
           "type": "ipad",
@@ -128,7 +133,8 @@
           "action": "raise",
           "src": "app_3.mp4",
           "start": "after_previous",
-          "delay": 0
+          "delay": 0,
+          "commentary_text": "We integrate payments"
         },
         {
           "type": "iphone",
@@ -139,7 +145,7 @@
       ]
     },
     "4": {
-      "preloadVideos": ["render_4.mp4", "operator_4.mp4"],
+      "preloadVideos": ["render_4.mp4", "operator_4.mp4", "app_4.mp4"],
       "steps": [
         {
           "type": "background",
@@ -153,25 +159,8 @@
           "action": "raise",
           "src": "operator_4.mp4",
           "start": "after_previous",
-          "delay": 3000
-        },
-        {
-          "type": "ipad",
-          "action": "video_ended",
-          "start": "after_previous",
-          "delay": 0
-        }
-      ]
-    },
-    "5": {
-      "preloadVideos": ["render_5.mp4", "operator_5.mp4", "app_5.mp4"],
-      "steps": [
-        {
-          "type": "ipad",
-          "action": "raise",
-          "src": "operator_5.mp4",
-          "start": "immediate",
-          "delay": 0
+          "delay": 3000,
+          "commentary_text": "View and manage violations"
         },
         {
           "type": "ipad",
@@ -188,16 +177,37 @@
         {
           "type": "iphone",
           "action": "raise",
-          "src": "app_5.mp4",
+          "src": "app_4.mp4",
           "start": "after_previous",
-          "delay": 200
+          "delay": 0,
+          "commentary_text": "Our app warns users"
+        },
+        {
+          "type": "iphone",
+          "action": "video_ended",
+          "start": "after_previous",
+          "delay": 0
+        }
+      ]
+    },
+    "5": {
+      "preloadVideos": ["render_5.mp4", "operator_5.mp4", "app_5.mp4"],
+      "steps": [
+        {
+          "type": "iphone",
+          "action": "raise",
+          "src": "app_5.mp4",
+          "start": "immediate",
+          "delay": 200,
+          "commentary_text": "Users can see live occupancy,\nrates, and are told if they can\nor cannot park here"
         },
         {
           "type": "background",
           "action": "play",
           "src": "render_5.mp4",
           "start": "after_previous",
-          "delay": 1500
+          "delay": 10500,
+          "commentary_text": "Saving time, hassle, and stress"
         },
         {
           "type": "iphone",
