@@ -462,7 +462,7 @@ const Ecosystem: React.FC<EcosystemProps> = ({
         const d = generatePath(pathDef.from, pathDef.to, variant);
         return { key, d };
       });
-  }, [data, dimensions.width, dimensions.height]);
+  }, [data]);
 
   const settings = data?.settings;
   const activeAnimations = activeAnimationsRef.current;

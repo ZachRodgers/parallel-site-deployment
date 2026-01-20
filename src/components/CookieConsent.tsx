@@ -3,14 +3,12 @@ import './CookieConsent.css';
 
 const CookieConsent: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
     const consent = localStorage.getItem('cookieConsent');
     if (!consent) {
       setIsVisible(true);
     } else {
-      setIsAccepted(consent === 'accepted');
       // Apply font loading based on consent
       if (consent === 'declined') {
         blockGoogleFonts();
@@ -37,13 +35,11 @@ const CookieConsent: React.FC = () => {
 
   const handleAccept = () => {
     localStorage.setItem('cookieConsent', 'accepted');
-    setIsAccepted(true);
     setIsVisible(false);
   };
 
   const handleDecline = () => {
     localStorage.setItem('cookieConsent', 'declined');
-    setIsAccepted(false);
     setIsVisible(false);
     blockGoogleFonts();
   };

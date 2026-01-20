@@ -6,10 +6,10 @@ import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import Home from './pages/Home';
 import Legal from './pages/Legal';
-import TermsOfService_App from './pages/TermsOfService_App';
-import PrivacyPolicy_App from './pages/PrivacyPolicy_App';
-import TermsOfService_Operator from './pages/TermsOfService_Operator';
-import PrivacyPolicy_Operator from './pages/PrivacyPolicy_Operator';
+import TermsOfServiceApp from './pages/TermsOfService_App';
+import PrivacyPolicyApp from './pages/PrivacyPolicy_App';
+import TermsOfServiceOperator from './pages/TermsOfService_Operator';
+import PrivacyPolicyOperator from './pages/PrivacyPolicy_Operator';
 import Contact from './pages/Contact';
 import Careers from './pages/Careers';
 import './App.css';
@@ -39,10 +39,10 @@ function AppComponent() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/legal" element={<Legal />} />
-              <Route path="/legal/app/terms-of-service" element={<TermsOfService_App />} />
-              <Route path="/legal/app/privacy-policy" element={<PrivacyPolicy_App />} />
-              <Route path="/legal/operator/terms-of-service" element={<TermsOfService_Operator />} />
-              <Route path="/legal/operator/privacy-policy" element={<PrivacyPolicy_Operator />} />
+              <Route path="/legal/app/terms-of-service" element={<TermsOfServiceApp />} />
+              <Route path="/legal/app/privacy-policy" element={<PrivacyPolicyApp />} />
+              <Route path="/legal/operator/terms-of-service" element={<TermsOfServiceOperator />} />
+              <Route path="/legal/operator/privacy-policy" element={<PrivacyPolicyOperator />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/team/:id" element={<TeamMember />} />
