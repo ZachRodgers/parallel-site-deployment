@@ -11,6 +11,12 @@
       "file": "investor_deck.pdf",
       "password": "Invest!",
       "title": "Investor Deck"
+    },
+    {
+      "slug": "stormtech",
+      "file": "stormtech_deck.pdf",
+      "password": "USA-USA",
+      "title": "Stormtech Deck"
     }
   ]
 }
