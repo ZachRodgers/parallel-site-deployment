@@ -1,0 +1,16 @@
+{
+  "decks": [
+    {
+      "slug": "example_deck",
+      "file": "example_deck.pdf",
+      "password": "Password",
+      "title": "Example Deck"
+    },
+    {
+      "slug": "investor_deck",
+      "file": "investor_deck.pdf",
+      "password": "Invest!",
+      "title": "Investor Deck"
+    }
+  ]
+}

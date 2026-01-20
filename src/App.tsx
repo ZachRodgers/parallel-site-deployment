@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Careers from './pages/Careers';
 import './App.css';
 import TeamMember from './pages/TeamMember';
+import Decks from './pages/Decks';
 
 function AppComponent() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -45,6 +46,15 @@ function AppComponent() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/team/:id" element={<TeamMember />} />
+              <Route
+                path="/decks/:deckName"
+                element={
+                  <Decks
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    onCollapseSidebar={setIsSidebarCollapsed}
+                  />
+                }
+              />
             </Routes>
           </main>
           <Footer isSidebarCollapsed={isSidebarCollapsed} />
