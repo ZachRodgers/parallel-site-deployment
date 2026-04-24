@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Maximize, Minimize } from 'lucide-react';
 import './Demos.css';
 
 type DemoEntry = {
@@ -69,6 +70,7 @@ const Demos: React.FC<DemosProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
   const [videoReady, setVideoReady] = useState(false);
   const [buffering, setBuffering] = useState(true);
   const [hovering, setHovering] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     if (onCollapseSidebar && isSidebarCollapsed === false) {
@@ -147,13 +149,65 @@ const Demos: React.FC<DemosProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
 
   const toggleFullscreen = () => {
     const el = containerRef.current;
-    if (!el) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    } else {
-      el.requestFullscreen().catch(() => {});
+    const video = videoRef.current;
+    const doc = document as any;
+    const fsElement = document.fullscreenElement || doc.webkitFullscreenElement;
+
+    if (fsElement) {
+      const exit = document.exitFullscreen || doc.webkitExitFullscreen;
+      if (exit) {
+        try {
+          const result = exit.call(document);
+          if (result && typeof result.catch === 'function') result.catch(() => {});
+        } catch {}
+      }
+      return;
+    }
+
+    const startPlaybackIfIdle = () => {
+      if (video && video.paused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    if (el) {
+      const elAny = el as any;
+      const request =
+        el.requestFullscreen || elAny.webkitRequestFullscreen || elAny.webkitRequestFullScreen;
+      if (request) {
+        try {
+          const result = request.call(el);
+          if (result && typeof result.then === 'function') {
+            result.then(startPlaybackIfIdle).catch(() => {});
+          } else {
+            startPlaybackIfIdle();
+          }
+          return;
+        } catch {}
+      }
+    }
+
+    const videoAny = video as any;
+    if (videoAny && typeof videoAny.webkitEnterFullscreen === 'function') {
+      try {
+        startPlaybackIfIdle();
+        videoAny.webkitEnterFullscreen();
+      } catch {}
     }
   };
+
+  useEffect(() => {
+    const handleChange = () => {
+      const doc = document as any;
+      setIsFullscreen(!!(document.fullscreenElement || doc.webkitFullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleChange);
+    document.addEventListener('webkitfullscreenchange', handleChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleChange);
+      document.removeEventListener('webkitfullscreenchange', handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
@@ -296,6 +350,14 @@ const Demos: React.FC<DemosProps> = ({ isSidebarCollapsed, onCollapseSidebar }) 
                 <span className="demo-video-time">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
+                <button
+                  type="button"
+                  className="demo-video-fullscreen-btn"
+                  onClick={toggleFullscreen}
+                  aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                >
+                  {isFullscreen ? <Minimize size={16} /> : <Maximize size={16} />}
+                </button>
               </div>
             </div>
           </div>
