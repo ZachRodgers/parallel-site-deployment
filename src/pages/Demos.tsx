@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Play, Pause } from 'lucide-react';
 import './Demos.css';
 
 type DemoEntry = {
