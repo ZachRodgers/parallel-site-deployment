@@ -15,6 +15,7 @@ import Careers from './pages/Careers';
 import './App.css';
 import TeamMember from './pages/TeamMember';
 import Decks from './pages/Decks';
+import Demos from './pages/Demos';
 
 const AppShell = () => {
   const location = useLocation();
@@ -51,6 +52,15 @@ const AppShell = () => {
               path="/decks/:deckName"
               element={
                 <Decks
+                  isSidebarCollapsed={isSidebarCollapsed}
+                  onCollapseSidebar={setIsSidebarCollapsed}
+                />
+              }
+            />
+            <Route
+              path="/demos/:videoName"
+              element={
+                <Demos
                   isSidebarCollapsed={isSidebarCollapsed}
                   onCollapseSidebar={setIsSidebarCollapsed}
                 />
